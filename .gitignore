@@ -1,1 +1,5 @@
-www/
+logs/access.log
+logs/error.log
+nginx/cert/*
+www/*
+!www/README.md
