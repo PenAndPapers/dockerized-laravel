@@ -4,36 +4,6 @@ networks:
   laravel:
 
 services:
-  #PHP Service
-  php:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: php
-    restart: on-failure
-    volumes:
-      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
-    networks:
-      - laravel
-  #MYSQL Service
-  mysql:
-    image: mysql:latest
-    container_name: mysql
-    restart: on-failure
-    tty: true
-    ports:
-      - "3366:3306"
-    expose:
-      - "3306"
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_PASSWORD: secret
-    depends_on: 
-      - php
-    networks:
-      - laravel
   #NGINX Service
   nginx:
     image: nginx:latest
@@ -60,6 +30,34 @@ services:
       - mysql
     networks:
       - laravel
+  #PHP Service
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    restart: on-failure
+    volumes:
+      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
+    networks:
+      - laravel
+  #MYSQL Service
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: on-failure
+    tty: true
+    ports:
+      - "3366:3306"
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_PASSWORD: secret
+    networks:
+      - laravel
   #Composer Service  
   composer:
     image: composer:latest
@@ -79,7 +77,6 @@ services:
       - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
     depends_on:
       - mysql
-      - php
     working_dir: ${CONTAINER_APP_DIR}
     entrypoint: ['${CONTAINER_APP_DIR}/artisan']
     networks:
