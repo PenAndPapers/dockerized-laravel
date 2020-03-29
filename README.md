@@ -28,7 +28,7 @@
 ```docker-compose --help or docker-compose -h```
 
 #### Run composer command
-```docker-compose run --rm composer```
+```php:7.4-fpm-alpine```
 
 #### Run artisan command
 ```docker-compose run --rm artisan make:seeder TestSeeder```

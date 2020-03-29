@@ -75,7 +75,7 @@ services:
 
   #Artisan service
   artisan:
-    image: php:7.3.15-fpm-alpine
+    image: php:7.4-fpm-alpine
     container_name: artisan
     volumes:
       - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
