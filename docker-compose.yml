@@ -1,0 +1,98 @@
+version: '3'
+
+networks:
+  laravel:
+
+services:
+  #PHP Service
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    restart: on-failure
+    volumes:
+      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
+    networks:
+      - laravel
+
+  #MYSQL Service
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: on-failure
+    tty: true
+    ports:
+      - "${DB_PORT}:3306"
+    expose:
+      - "${DB_PORT}"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - laravel
+
+  #NGINX Service
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: on-failure
+    ports:
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
+    volumes:
+      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/cert/nginx-selfsigned.crt:/etc/nginx/certs/nginx-selfsigned.crt
+      - ./nginx/cert/nginx-selfsigned.key:/etc/nginx/certs/nginx-selfsigned.key
+      - ./nginx/cert/dhparam.pem:/etc/ssl/certs/dhparam.pem
+      - ./nginx/logs/access.log:/var/log/nginx/access.log
+      - ./nginx/logs/error.log:/var/log/nginx/error.log
+    environment:
+      - NGINX_HOST=${LOCAL_APP_HOSTNAME}
+      - NGINX_PORT=80
+    links:
+      - php
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - laravel
+
+  #Composer Service  
+  composer:
+    image: composer:latest
+    container_name: composer
+    volumes:
+      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
+    working_dir: ${CONTAINER_APP_DIR}
+    depends_on:
+      - php
+    networks:
+      - laravel
+
+  #Artisan service
+  artisan:
+    image: php:7.4-fpm-alpine
+    container_name: artisan
+    volumes:
+      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
+    depends_on:
+      - mysql
+    working_dir: ${CONTAINER_APP_DIR}
+    entrypoint: ['${CONTAINER_APP_DIR}/artisan']
+    networks:
+      - laravel
+
+  #NPM Servive
+  npm:
+    image: node:13.7
+    container_name: npm
+    volumes:
+      - ${LOCAL_APP_DIR}:${CONTAINER_APP_DIR}
+    working_dir: ${CONTAINER_APP_DIR}
+    entrypoint: ['npm']
+    networks:
+      - laravel

@@ -1,0 +1,10 @@
+.env
+
+nginx/logs/*
+!nginx/logs/README.md
+
+nginx/cert/*
+!nginx/cert/README.md
+
+www/*
+!www/README.md
