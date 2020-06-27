@@ -1,4 +1,4 @@
-## FYI when NGINX is installed your local machine stop it first
+## FYI if NGINX is installed in your local machine and you want to use port 80 for Docker make sure to stop local NGINX service first
 ```systemctl stop nginx```
 
 #### To start docker run the ff. command
@@ -13,7 +13,7 @@
 #### To remove all images
 ```docker system prune -a```
 
-  - FYI when containers are being used only the images with no working containers will be removed
+  - FYI this command will remove all images with no working containers
 
 #### List all working containers
 ```docker ps -a```
