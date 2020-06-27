@@ -1,0 +1,9 @@
+CONTAINER_APP_DIR=/path/to/container/project
+LOCAL_APP_DIR=./path/to/local/project
+LOCAL_APP_HOSTNAME=local-site-name.com
+DB_PORT=db_port
+DB_NAME=db_name
+DB_USER=db_user
+DB_PASSWORD=db_password
+HTTP_PORT=exposed_nginx_http_port
+HTTPS_PORT=exposed_nginx_https_port
